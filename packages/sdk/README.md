@@ -1,19 +1,19 @@
-# @mcp-telemetry/sdk
+# mcp-telemetry-sdk
 
-Zero-dependency instrumentation for MCP servers. Emit `job`/`step`/`log`/`cost` telemetry from your tool handlers; any `@mcp-telemetry/server` (or your own collector) picks it up over a local socket.
+Zero-dependency instrumentation for MCP servers. Emit `job`/`step`/`log`/`cost` telemetry from your tool handlers; any `mcp-telemetry-server` (or your own collector) picks it up over a local socket.
 
 Full documentation, architecture, and the companion server: [github.com/arnavranjan005/mcp-telemetry](https://github.com/arnavranjan005/mcp-telemetry)
 
 ## Install
 
 ```bash
-npm install @mcp-telemetry/sdk
+npm install mcp-telemetry-sdk
 ```
 
 ## Usage
 
 ```js
-import { MCPTelemetry } from '@mcp-telemetry/sdk';
+import { MCPTelemetry } from 'mcp-telemetry-sdk';
 
 const telemetry = new MCPTelemetry(); // zero config
 

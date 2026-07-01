@@ -1,8 +1,8 @@
 # mcp-telemetry
 
 [![CI](https://github.com/arnavranjan005/mcp-telemetry/actions/workflows/ci.yml/badge.svg)](https://github.com/arnavranjan005/mcp-telemetry/actions/workflows/ci.yml)
-[![npm (sdk)](https://img.shields.io/npm/v/%40mcp-telemetry%2Fsdk?label=%40mcp-telemetry%2Fsdk)](https://www.npmjs.com/package/@mcp-telemetry/sdk)
-[![npm (server)](https://img.shields.io/npm/v/%40mcp-telemetry%2Fserver?label=%40mcp-telemetry%2Fserver)](https://www.npmjs.com/package/@mcp-telemetry/server)
+[![npm (sdk)](https://img.shields.io/npm/v/mcp-telemetry-sdk?label=mcp-telemetry-sdk)](https://www.npmjs.com/package/mcp-telemetry-sdk)
+[![npm (server)](https://img.shields.io/npm/v/mcp-telemetry-server?label=mcp-telemetry-server)](https://www.npmjs.com/package/mcp-telemetry-server)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **Socket.IO for AI agents.** Instrument any MCP server's tool calls with a few lines, and any MCP client watching (Claude Code, Cursor, or your own tooling) gets live, structured progress — no polling, no context-flooding tool calls.
@@ -10,7 +10,7 @@
 ```
 Your MCP server                    mcp-telemetry server         Agent
 ─────────────────                  ────────────────────         ─────
-@mcp-telemetry/sdk
+mcp-telemetry-sdk
   job.stepStart('build')
        │
        │ local socket (queued, persistent connection)
@@ -37,22 +37,22 @@ Two packages, one job each:
 
 | Package | Who uses it | What it does |
 |---|---|---|
-| [`@mcp-telemetry/sdk`](packages/sdk) | MCP server authors | Import it, call `job.start()` / `.stepDone()` / `.log()` from your tool handlers. Zero runtime dependencies — it's a socket writer with a persistent, queued connection and nothing else. |
-| [`@mcp-telemetry/server`](packages/server) | Agent users | An MCP server you register once. Exposes `telemetry_subscribe` (blocks and streams live progress for a job), plus `telemetry_jobs`/`telemetry_job_status` for point-in-time queries. |
+| [`mcp-telemetry-sdk`](packages/sdk) | MCP server authors | Import it, call `job.start()` / `.stepDone()` / `.log()` from your tool handlers. Zero runtime dependencies — it's a socket writer with a persistent, queued connection and nothing else. |
+| [`mcp-telemetry-server`](packages/server) | Agent users | An MCP server you register once. Exposes `telemetry_subscribe` (blocks and streams live progress for a job), plus `telemetry_jobs`/`telemetry_job_status` for point-in-time queries. |
 
 These two packages are architecturally independent — the SDK never calls any MCP tool, and the server never imports your tool's code. They only ever meet at a local socket, so a producer with a broken connection can't take down anything, and a collector that's overwhelmed can't block your tool call.
 
 ## Quickstart
 
-### 1. Instrument your MCP server (`@mcp-telemetry/sdk`)
+### 1. Instrument your MCP server (`mcp-telemetry-sdk`)
 
 ```bash
-npm install @mcp-telemetry/sdk
+npm install mcp-telemetry-sdk
 ```
 
 ```js
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { MCPTelemetry } from '@mcp-telemetry/sdk';
+import { MCPTelemetry } from 'mcp-telemetry-sdk';
 
 const server = new McpServer({ name: 'my-deploy-server', version: '1.0.0' });
 const telemetry = new MCPTelemetry(); // zero config — derives a socket path from cwd
@@ -81,10 +81,10 @@ server.tool('deploy', { env: z.string() }, async ({ env }) => {
 
 That's the entire integration. If nothing is listening on the socket, every call is a fast no-op — your server behaves identically with or without a collector running.
 
-### 2. Watch it from an agent (`@mcp-telemetry/server`)
+### 2. Watch it from an agent (`mcp-telemetry-server`)
 
 ```bash
-npm install -g @mcp-telemetry/server
+npm install -g mcp-telemetry-server
 ```
 
 Register it as an MCP server, alongside your instrumented one:
@@ -93,7 +93,7 @@ Register it as an MCP server, alongside your instrumented one:
 {
   "mcpServers": {
     "deploy": { "command": "npx", "args": ["-y", "deploy-mcp"] },
-    "telemetry": { "command": "npx", "args": ["-y", "@mcp-telemetry/server"] }
+    "telemetry": { "command": "npx", "args": ["-y", "mcp-telemetry-server"] }
   }
 }
 ```
@@ -118,7 +118,7 @@ No polling, no separate terminal, no context-flooding tool calls — one `deploy
 
 ## API reference
 
-### `@mcp-telemetry/sdk`
+### `mcp-telemetry-sdk`
 
 **`new MCPTelemetry(opts?)`**
 Creates a telemetry client. `opts.socketPath` overrides the default (derived from `process.cwd()` via `getSocketPath()`). Owns one persistent, queued connection shared by every job it creates.
@@ -141,7 +141,7 @@ Closes the underlying connection. Call on server shutdown if you want a clean te
 
 `getSocketPath(root?)` is also exported, for advanced cases where you need to compute the same path a producer and a server will independently derive.
 
-### `@mcp-telemetry/server`
+### `mcp-telemetry-server`
 
 Exposes three MCP tools:
 

@@ -1,7 +1,7 @@
 import net from 'net';
 import { randomUUID } from 'crypto';
 import { Collector } from '../collector.js';
-import type { MonitorEvent } from '@mcp-telemetry/sdk';
+import type { MonitorEvent } from 'mcp-telemetry-sdk';
 
 function testSocketPath(): string {
   return `\\\\.\\pipe\\collector-test-${randomUUID()}`;

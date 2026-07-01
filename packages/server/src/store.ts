@@ -1,4 +1,4 @@
-import type { MonitorEvent, TaskStatus } from '@mcp-telemetry/sdk';
+import type { MonitorEvent, TaskStatus } from 'mcp-telemetry-sdk';
 
 export interface StepState {
   name: string;

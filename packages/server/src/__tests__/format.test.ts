@@ -1,5 +1,5 @@
 import { formatEvent, formatMeta, formatJob } from '../format.js';
-import type { MonitorEvent } from '@mcp-telemetry/sdk';
+import type { MonitorEvent } from 'mcp-telemetry-sdk';
 import type { JobState } from '../store.js';
 
 const ts = new Date().toISOString();

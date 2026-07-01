@@ -19,13 +19,13 @@ npm test
 ```
 mcp-telemetry/
 ├── packages/
-│   ├── sdk/                  → @mcp-telemetry/sdk (the instrumentation library)
+│   ├── sdk/                  → mcp-telemetry-sdk (the instrumentation library)
 │   │   └── src/
 │   │       ├── index.ts      → MCPTelemetry (public entry point)
 │   │       ├── job.ts        → JobHandle
 │   │       ├── connection.ts → QueuedConnection (persistent socket + retry/backoff)
 │   │       └── protocol.ts   → MonitorEvent types, getSocketPath()
-│   └── server/                → @mcp-telemetry/server (the collector + MCP tools)
+│   └── server/                → mcp-telemetry-server (the collector + MCP tools)
 │       └── src/
 │           ├── index.ts      → MCP tool definitions, bootstrap
 │           ├── collector.ts  → NDJSON socket listener
@@ -42,7 +42,7 @@ Both packages compile with `tsc` to NodeNext ESM for the real build (`npm run bu
 1. Open an issue first for anything beyond a small fix — see [design notes](README.md#design-notes-worth-knowing-before-you-rely-on-this) for what's in scope.
 2. Add or update tests for any behavior change. A PR that changes `connection.ts`, `collector.ts`, or `store.ts` without a corresponding test will be asked to add one.
 3. Run `npm test` locally before opening the PR — CI runs the same suite on Ubuntu and Windows (this project deals directly with OS-level sockets/named pipes, so cross-platform behavior is not optional).
-4. Keep the SDK dependency-free. `@mcp-telemetry/sdk` has zero runtime dependencies and no MCP-specific concepts in it (no `progressToken`, no `sendNotification`) — that's load-bearing, not an oversight. Anything MCP-protocol-specific belongs in `@mcp-telemetry/server`.
+4. Keep the SDK dependency-free. `mcp-telemetry-sdk` has zero runtime dependencies and no MCP-specific concepts in it (no `progressToken`, no `sendNotification`) — that's load-bearing, not an oversight. Anything MCP-protocol-specific belongs in `mcp-telemetry-server`.
 5. Match the existing comment style: comments explain *why*, not *what*. If a comment just restates the code, it should probably be deleted instead of added.
 
 ## Commit messages

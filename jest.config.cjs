@@ -37,7 +37,7 @@ module.exports = {
       transform: tsJestTransform,
       moduleNameMapper: {
         ...moduleNameMapper,
-        '^@mcp-telemetry/sdk$': '<rootDir>/../sdk/src/index.ts',
+        '^mcp-telemetry-sdk$': '<rootDir>/../sdk/src/index.ts',
       },
     },
     {
@@ -51,7 +51,7 @@ module.exports = {
         // Runs the sdk producer in-process from source (compiled on the fly);
         // the server side of these tests spawns the real compiled
         // dist/bin/server.js as a separate process instead — see helpers.ts.
-        '^@mcp-telemetry/sdk$': '<rootDir>/../../packages/sdk/src/index.ts',
+        '^mcp-telemetry-sdk$': '<rootDir>/../../packages/sdk/src/index.ts',
       },
     },
   ],

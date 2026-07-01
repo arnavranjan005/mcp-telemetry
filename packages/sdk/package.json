@@ -1,7 +1,7 @@
 {
-  "name": "@mcp-telemetry/sdk",
+  "name": "mcp-telemetry-sdk",
   "version": "0.1.0",
-  "description": "Zero-dependency instrumentation library for MCP servers — emit job/step/log/cost telemetry that any @mcp-telemetry/server (or your own collector) can pick up.",
+  "description": "Zero-dependency instrumentation library for MCP servers — emit job/step/log/cost telemetry that any mcp-telemetry-server (or your own collector) can pick up.",
   "type": "module",
   "license": "MIT",
   "author": "Arnav Ranjan <arnavranjan005@gmail.com>",

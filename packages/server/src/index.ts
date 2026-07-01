@@ -1,8 +1,8 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { getSocketPath } from '@mcp-telemetry/sdk';
-import type { MonitorEvent } from '@mcp-telemetry/sdk';
+import { getSocketPath } from 'mcp-telemetry-sdk';
+import type { MonitorEvent } from 'mcp-telemetry-sdk';
 import { Collector } from './collector.js';
 import { JobStore } from './store.js';
 import { formatEvent, formatJob } from './format.js';

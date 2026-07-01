@@ -1,4 +1,4 @@
-import type { MonitorEvent } from '@mcp-telemetry/sdk';
+import type { MonitorEvent } from 'mcp-telemetry-sdk';
 import type { JobState } from './store.js';
 
 export function formatMeta(meta: Record<string, unknown> | undefined): string {

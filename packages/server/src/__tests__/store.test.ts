@@ -1,5 +1,5 @@
 import { JobStore } from '../store.js';
-import type { MonitorEvent } from '@mcp-telemetry/sdk';
+import type { MonitorEvent } from 'mcp-telemetry-sdk';
 
 // Distributive omit — Omit<MonitorEvent, 'timestamp'> directly would collapse
 // to only the keys common across every union member (just `type`/`jobId`),

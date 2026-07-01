@@ -1,11 +1,11 @@
-# @mcp-telemetry/server
+# mcp-telemetry-server
 
-The collector half of [mcp-telemetry](https://github.com/arnavranjan005/mcp-telemetry). Register it as an MCP server to watch live progress from any tool instrumented with [`@mcp-telemetry/sdk`](https://www.npmjs.com/package/@mcp-telemetry/sdk).
+The collector half of [mcp-telemetry](https://github.com/arnavranjan005/mcp-telemetry). Register it as an MCP server to watch live progress from any tool instrumented with [`mcp-telemetry-sdk`](https://www.npmjs.com/package/mcp-telemetry-sdk).
 
 ## Install
 
 ```bash
-npm install -g @mcp-telemetry/server
+npm install -g mcp-telemetry-server
 ```
 
 ## Register it
@@ -13,7 +13,7 @@ npm install -g @mcp-telemetry/server
 ```json
 {
   "mcpServers": {
-    "telemetry": { "command": "npx", "args": ["-y", "@mcp-telemetry/server"] }
+    "telemetry": { "command": "npx", "args": ["-y", "mcp-telemetry-server"] }
   }
 }
 ```

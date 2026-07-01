@@ -1,9 +1,9 @@
 name: Release
 
 # Publishes both packages to npm when a `v*` tag is pushed (e.g. `v0.1.0`).
-# Requires an NPM_TOKEN repo secret (an npm automation token with publish
-# rights to the @mcp-telemetry scope) — this workflow does nothing until
-# that secret is configured.
+# Requires an NPM_TOKEN repo secret (an npm token with publish rights to
+# mcp-telemetry-sdk and mcp-telemetry-server) — this workflow does nothing
+# until that secret is configured.
 
 on:
   push:

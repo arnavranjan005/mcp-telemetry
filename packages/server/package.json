@@ -1,7 +1,7 @@
 {
-  "name": "@mcp-telemetry/server",
+  "name": "mcp-telemetry-server",
   "version": "0.1.0",
-  "description": "MCP server that collects telemetry from any @mcp-telemetry/sdk-instrumented tool and pushes live progress to any connected MCP client (Claude Code, Cursor, and others).",
+  "description": "MCP server that collects telemetry from any mcp-telemetry-sdk-instrumented tool and pushes live progress to any connected MCP client (Claude Code, Cursor, and others).",
   "type": "module",
   "license": "MIT",
   "author": "Arnav Ranjan <arnavranjan005@gmail.com>",
@@ -32,7 +32,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@mcp-telemetry/sdk": "^0.1.0",
+    "mcp-telemetry-sdk": "^0.1.0",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "zod": "^4.4.3"
   },

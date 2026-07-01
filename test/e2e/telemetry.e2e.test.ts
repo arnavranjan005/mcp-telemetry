@@ -1,4 +1,4 @@
-import { MCPTelemetry, getSocketPath } from '@mcp-telemetry/sdk';
+import { MCPTelemetry, getSocketPath } from 'mcp-telemetry-sdk';
 import { startMcpTelemetryServer, initializeMcp, progressNotifications, McpTestClient } from './helpers.js';
 
 describe('mcp-telemetry end-to-end (real compiled server + real sdk producer)', () => {

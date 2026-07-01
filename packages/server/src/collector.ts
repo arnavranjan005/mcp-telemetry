@@ -1,6 +1,6 @@
 import net from 'net';
 import { existsSync, unlinkSync } from 'fs';
-import type { MonitorEvent } from '@mcp-telemetry/sdk';
+import type { MonitorEvent } from 'mcp-telemetry-sdk';
 
 export class Collector {
   private readonly server: net.Server;

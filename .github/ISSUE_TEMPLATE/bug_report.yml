@@ -12,8 +12,8 @@ body:
     attributes:
       label: Which package?
       options:
-        - "@mcp-telemetry/sdk"
-        - "@mcp-telemetry/server"
+        - "mcp-telemetry-sdk"
+        - "mcp-telemetry-server"
         - Both / not sure
     validations:
       required: true
