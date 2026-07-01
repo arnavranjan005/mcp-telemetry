@@ -7,6 +7,14 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: development
+    # Major-version bumps are adopted deliberately, one at a time, not via
+    # an automated PR — a bundled major-bump PR (TypeScript 5->6 + Jest
+    # 29->30 + two @types majors) cascaded through multiple incompatibilities
+    # that CI alone didn't catch cleanly. Patch/minor bumps are low-risk
+    # enough to keep automatic.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
