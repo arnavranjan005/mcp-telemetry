@@ -21,9 +21,9 @@
     "release": "npm run build && npm run test && npm publish --workspaces"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.0",
-    "jest": "^29.7.0",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.4.2",
     "ts-jest": "^29.2.0",
-    "typescript": "^5.5.0"
+    "typescript": "^6.0.3"
   }
 }
