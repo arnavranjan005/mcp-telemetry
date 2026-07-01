@@ -1,0 +1,29 @@
+{
+  "name": "mcp-telemetry",
+  "private": true,
+  "description": "Socket.IO-style telemetry for MCP servers — instrument any tool call, watch live progress from any MCP client.",
+  "license": "MIT",
+  "author": "Arnav Ranjan <arnavranjan005@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arnavranjan005/mcp-telemetry.git"
+  },
+  "homepage": "https://github.com/arnavranjan005/mcp-telemetry#readme",
+  "bugs": {
+    "url": "https://github.com/arnavranjan005/mcp-telemetry/issues"
+  },
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "dev": "npm run dev --workspaces --if-present",
+    "pretest": "npm run build",
+    "test": "jest --runInBand",
+    "release": "npm run build && npm run test && npm publish --workspaces"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.0",
+    "typescript": "^5.5.0"
+  }
+}

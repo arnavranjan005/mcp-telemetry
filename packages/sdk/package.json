@@ -1,0 +1,42 @@
+{
+  "name": "@mcp-telemetry/sdk",
+  "version": "0.1.0",
+  "description": "Zero-dependency instrumentation library for MCP servers — emit job/step/log/cost telemetry that any @mcp-telemetry/server (or your own collector) can pick up.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Arnav Ranjan <arnavranjan005@gmail.com>",
+  "keywords": ["mcp", "model-context-protocol", "telemetry", "observability", "ai-agent", "monitoring", "progress", "notifications", "claude-code", "long-running-tasks", "mcp-server"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arnavranjan005/mcp-telemetry.git",
+    "directory": "packages/sdk"
+  },
+  "homepage": "https://github.com/arnavranjan005/mcp-telemetry/tree/main/packages/sdk#readme",
+  "bugs": {
+    "url": "https://github.com/arnavranjan005/mcp-telemetry/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist/"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.5.0"
+  }
+}

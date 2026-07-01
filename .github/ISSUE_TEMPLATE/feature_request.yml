@@ -1,0 +1,30 @@
+name: Feature request
+description: Propose a new capability or an improvement
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before requesting a feature, please check [README.md's design notes](https://github.com/arnavranjan005/mcp-telemetry#design-notes-worth-knowing-before-you-rely-on-this) — persistence, cross-machine delivery, and guaranteed retries are deliberate non-goals of this project, not gaps waiting to be filled.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the situation you're in and why the current behavior doesn't work for it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would you like to happen? API sketches are welcome.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any other approaches you thought about, and why you didn't go with them.

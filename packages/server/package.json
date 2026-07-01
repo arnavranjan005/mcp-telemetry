@@ -1,0 +1,43 @@
+{
+  "name": "@mcp-telemetry/server",
+  "version": "0.1.0",
+  "description": "MCP server that collects telemetry from any @mcp-telemetry/sdk-instrumented tool and pushes live progress to any connected MCP client (Claude Code, Cursor, and others).",
+  "type": "module",
+  "license": "MIT",
+  "author": "Arnav Ranjan <arnavranjan005@gmail.com>",
+  "keywords": ["mcp", "model-context-protocol", "telemetry", "observability", "ai-agent", "monitoring", "claude-code", "progress", "notifications", "background-jobs", "long-running-tasks", "mcp-server", "cursor"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arnavranjan005/mcp-telemetry.git",
+    "directory": "packages/server"
+  },
+  "homepage": "https://github.com/arnavranjan005/mcp-telemetry/tree/main/packages/server#readme",
+  "bugs": {
+    "url": "https://github.com/arnavranjan005/mcp-telemetry/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "mcp-telemetry-server": "./bin/server.js"
+  },
+  "files": ["bin/", "dist/"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node bin/server.js",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@mcp-telemetry/sdk": "^0.1.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.5.0"
+  }
+}
