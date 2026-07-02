@@ -57,15 +57,20 @@ export function watchJob(opts: WatchJobOptions): Promise<string> {
       return push(message);
     };
 
-    // Async so every caller that needs the final response to arrive AFTER
-    // the last notification (both callers below) can await it — resolving
-    // the tool call is what ends the whole exchange, so anything not yet
-    // sent by that point risks never reaching the client at all.
-    const finish = async (text: string) => {
+    // The single place that ends the exchange. Claims "done" synchronously
+    // (settled + clearTimeout, no await in between) before doing anything
+    // else — that's what makes it race-proof against the deadline timer:
+    // once this line has run, the timer literally cannot win anymore,
+    // regardless of how long flushing/pushing the final notification takes.
+    // This is also why the job_done notification is sent from HERE rather
+    // than by the caller beforehand — sending it first, outside this guard,
+    // is exactly what left the deadline free to fire in the gap.
+    const finish = async (text: string, finalMessage?: string) => {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
       await flushLogs();
+      if (finalMessage !== undefined) await push(finalMessage);
       collector.offEvent(handler);
       resolve(text);
     };
@@ -80,11 +85,13 @@ export function watchJob(opts: WatchJobOptions): Promise<string> {
         return;
       }
 
+      if (event.type === 'job_done') {
+        await finish(`Job ${event.jobId} finished (exit ${event.exitCode}).`, formatEvent(event));
+        return;
+      }
+
       await flushLogs();
       await push(formatEvent(event));
-      if (event.type === 'job_done') {
-        await finish(`Job ${event.jobId} finished (exit ${event.exitCode}).`);
-      }
     };
 
     collector.onEvent(handler);

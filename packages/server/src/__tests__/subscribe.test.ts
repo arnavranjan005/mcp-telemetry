@@ -81,4 +81,30 @@ describe('watchJob', () => {
       expect(order).toEqual(['notification-sent', 'resolved']);
     },
   );
+
+  it(
+    'REGRESSION (Codex review): a slow final notification must not let the deadline timer win — ' +
+    'a job that actually finished in time must not be reported as timed out',
+    async () => {
+      const collector = new Collector(testSocketPath());
+      let releaseNotification: (() => void) | null = null;
+      const sendNotification = jest.fn(() => new Promise<void>((resolve) => {
+        releaseNotification = resolve;
+      }));
+
+      // job_done arrives almost immediately, but sending its notification
+      // doesn't resolve until well AFTER deadlineMs would have elapsed —
+      // the deadline must not be allowed to fire once job_done is observed.
+      const promise = watchJob({ collector, jobId: 'j1', deadlineMs: 200, progressToken: 'tok', sendNotification });
+
+      const handlers = (collector as unknown as { handlers: Array<(e: MonitorEvent) => void> }).handlers;
+      handlers.forEach((h) => h({ type: 'job_done', jobId: 'j1', exitCode: 0, timestamp: ts }));
+
+      await new Promise((r) => setTimeout(r, 300)); // let the deadline elapse mid-send
+      releaseNotification!();
+
+      const text = await promise;
+      expect(text).toBe('Job j1 finished (exit 0).');
+    },
+  );
 });
