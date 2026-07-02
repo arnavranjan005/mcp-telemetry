@@ -81,4 +81,60 @@ describe('watchJob', () => {
       expect(order).toEqual(['notification-sent', 'resolved']);
     },
   );
+
+  it(
+    'REGRESSION (Codex review): a slow final notification must not let the deadline timer win — ' +
+    'a job that actually finished in time must not be reported as timed out',
+    async () => {
+      const collector = new Collector(testSocketPath());
+      let releaseNotification: (() => void) | null = null;
+      const sendNotification = jest.fn(() => new Promise<void>((resolve) => {
+        releaseNotification = resolve;
+      }));
+
+      // job_done arrives almost immediately, but sending its notification
+      // doesn't resolve until well AFTER deadlineMs would have elapsed —
+      // the deadline must not be allowed to fire once job_done is observed.
+      const promise = watchJob({ collector, jobId: 'j1', deadlineMs: 200, progressToken: 'tok', sendNotification });
+
+      const handlers = (collector as unknown as { handlers: Array<(e: MonitorEvent) => void> }).handlers;
+      handlers.forEach((h) => h({ type: 'job_done', jobId: 'j1', exitCode: 0, timestamp: ts }));
+
+      await new Promise((r) => setTimeout(r, 300)); // let the deadline elapse mid-send
+      releaseNotification!();
+
+      const text = await promise;
+      expect(text).toBe('Job j1 finished (exit 0).');
+    },
+  );
+
+  it(
+    'REGRESSION (Codex review): an event arriving while the final notification is still in flight ' +
+    'must not schedule a dangling notification that fires after the tool call already resolved',
+    async () => {
+      const collector = new Collector(testSocketPath());
+      let releaseNotification: (() => void) | null = null;
+      const sendNotification = jest.fn(() => new Promise<void>((resolve) => {
+        releaseNotification = resolve;
+      }));
+
+      // No jobId filter — every event passes the filter, matching the
+      // "watch the next job to start" mode where this is reachable.
+      const promise = watchJob({ collector, deadlineMs: 3000, progressToken: 'tok', sendNotification });
+
+      const handlers = (collector as unknown as { handlers: Array<(e: MonitorEvent) => void> }).handlers;
+      handlers.forEach((h) => h({ type: 'job_done', jobId: 'j1', exitCode: 0, timestamp: ts }));
+
+      await new Promise((r) => setTimeout(r, 50)); // let the async chain reach sendNotification
+      handlers.forEach((h) => h({ type: 'log', jobId: 'other-job', line: 'late log', timestamp: ts }));
+
+      releaseNotification!();
+      await promise;
+
+      expect(sendNotification).toHaveBeenCalledTimes(1);
+      await new Promise((r) => setTimeout(r, 1700)); // past LOG_THROTTLE_MS, catches a dangling timer
+      expect(sendNotification).toHaveBeenCalledTimes(1);
+    },
+    10000,
+  );
 });
