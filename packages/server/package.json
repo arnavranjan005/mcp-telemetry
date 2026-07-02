@@ -1,6 +1,7 @@
 {
   "name": "mcp-telemetry-server",
-  "version": "0.1.2",
+  "version": "0.1.3",
+  "mcpName": "io.github.arnavranjan005/mcp-telemetry-server",
   "description": "MCP server that collects telemetry from any mcp-telemetry-sdk-instrumented tool and pushes live progress to any connected MCP client (Claude Code, Cursor, and others).",
   "type": "module",
   "license": "MIT",

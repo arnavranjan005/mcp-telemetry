@@ -4,6 +4,13 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] — 2026-07-02
+
+Server-only patch (`mcp-telemetry-server` only — `mcp-telemetry-sdk` unchanged since 0.1.1).
+
+### Fixed
+- `mcp-telemetry-server`: added the `mcpName` field to `package.json`, required by the MCP Registry as proof of npm-package ownership when publishing `server.json`.
+
 ## [0.1.2] — 2026-07-02
 
 Server-only patch (`mcp-telemetry-server` only — `mcp-telemetry-sdk` unchanged since 0.1.1).
@@ -29,6 +36,7 @@ Server-only patch (`mcp-telemetry-server` only — `mcp-telemetry-sdk` unchanged
 - `mcp-telemetry-server`: `telemetry_jobs` and `telemetry_job_status` tools for point-in-time queries.
 - Full Jest test suite: unit tests for both packages plus an end-to-end suite that spawns the real compiled server binary and drives it over stdio.
 
+[0.1.3]: https://github.com/arnavranjan005/mcp-telemetry/releases/tag/v0.1.3
 [0.1.2]: https://github.com/arnavranjan005/mcp-telemetry/releases/tag/v0.1.2
 [0.1.1]: https://github.com/arnavranjan005/mcp-telemetry/releases/tag/v0.1.1
 [0.1.0]: https://github.com/arnavranjan005/mcp-telemetry/releases/tag/v0.1.0
