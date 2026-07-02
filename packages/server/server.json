@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.arnavranjan005/mcp-telemetry-server",
+  "description": "Streams live progress from mcp-telemetry-sdk-instrumented tools to any connected MCP client.",
+  "repository": {
+    "url": "https://github.com/arnavranjan005/mcp-telemetry",
+    "source": "github",
+    "subfolder": "packages/server"
+  },
+  "version": "0.1.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "mcp-telemetry-server",
+      "version": "0.1.2",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
