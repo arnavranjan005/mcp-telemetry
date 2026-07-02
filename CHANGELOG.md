@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] — 2026-07-02
+
+### Fixed
+- `mcp-telemetry-sdk`: `QueuedConnection.drain()` (used by `done()`) resolved as soon as `queue.length` reached 0, which happens the instant `socket.write()` is *called*, not when the OS actually confirms the write completed. Since that check runs synchronously, `drain()` could resolve via a microtask that always beat the write's own completion callback (a macrotask), letting the caller's process exit before the terminal `job_done` event was actually flushed. `drain()` now tracks real write completion (`pendingWrites`) and waits for it.
+- `mcp-telemetry-server`: `telemetry_subscribe` pushed a job's final `notifications/progress` tick (`✓ job done (exit N)`) without awaiting the send before resolving the tool call, so the final tool response could reach the client before that last notification was actually sent. `telemetry_subscribe`'s internals are now extracted into a directly-testable `watchJob()` (`subscribe.ts`), and every path that resolves the tool call awaits its last notification first.
+
 ## [0.1.0] — 2026-07-02
 
 ### Added
@@ -15,4 +21,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `mcp-telemetry-server`: `telemetry_jobs` and `telemetry_job_status` tools for point-in-time queries.
 - Full Jest test suite: unit tests for both packages plus an end-to-end suite that spawns the real compiled server binary and drives it over stdio.
 
+[0.1.1]: https://github.com/arnavranjan005/mcp-telemetry/releases/tag/v0.1.1
 [0.1.0]: https://github.com/arnavranjan005/mcp-telemetry/releases/tag/v0.1.0

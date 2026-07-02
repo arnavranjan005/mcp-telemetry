@@ -25,3 +25,6 @@ npm-debug.log*
 # Misc
 *.tsbuildinfo
 .mcp-telemetry.sock
+
+# Local CLI tools (e.g. mcp-publisher), never committed
+.tools/

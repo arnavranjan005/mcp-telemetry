@@ -169,6 +169,47 @@ describe('QueuedConnection', () => {
     conn.close();
   });
 
+  it('drain() waits for the OS write callback, not just for queue.length to hit 0 (regression: job_done could be lost if the process exited right after done() resolved)', async () => {
+    // queue.length reaches 0 the instant socket.write() is CALLED, not when
+    // the OS confirms the bytes were actually flushed. Checking queue-empty
+    // alone lets drain() resolve via a microtask that always beats the
+    // write's own completion callback (a macrotask) — so the caller could
+    // proceed (and the host process could exit) before delivery actually
+    // completed. This test intercepts the real write call to control
+    // exactly when its callback fires, simulating a slow-but-not-failed OS
+    // flush, and proves drain() genuinely waits for it.
+    const socketPath = testSocketPath();
+    const collector = startFakeCollector(socketPath);
+    await collector.listen();
+
+    const conn = new QueuedConnection(socketPath);
+    conn.send('warm-up\n');
+    await waitFor(() => collector.received.length >= 1);
+
+    let releaseWrite: (() => void) | null = null;
+    const writeSpy = jest
+      .spyOn(net.Socket.prototype, 'write')
+      .mockImplementationOnce(((_data: unknown, cb?: (err?: Error) => void) => {
+        releaseWrite = () => cb?.();
+        return true;
+      }) as typeof net.Socket.prototype.write);
+
+    conn.send('final\n');
+    let resolved = false;
+    const drainPromise = conn.drain(2000).then(() => { resolved = true; });
+
+    await new Promise((r) => setTimeout(r, 150));
+    expect(resolved).toBe(false); // must not resolve before the write is confirmed
+
+    releaseWrite!();
+    await drainPromise;
+    expect(resolved).toBe(true);
+
+    writeSpy.mockRestore();
+    conn.close();
+    await collector.close();
+  });
+
   it('close() stops accepting further sends', async () => {
     const socketPath = testSocketPath();
     const collector = startFakeCollector(socketPath);
