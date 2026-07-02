@@ -76,6 +76,14 @@ export function watchJob(opts: WatchJobOptions): Promise<string> {
     };
 
     const handler = async (event: MonitorEvent) => {
+      // finish() sets settled synchronously before its own awaits (final
+      // notification send, offEvent) — but the handler stays registered
+      // for the duration of those awaits. Without this check, an event
+      // arriving in that window (e.g. another job's log, when jobId is
+      // unset and every event passes the filter below) would still get
+      // queued into pendingLogs and arm a logTimer that fires — sending a
+      // notification — after the tool call has already resolved.
+      if (settled) return;
       if (jobId && event.jobId !== jobId) return;
 
       if (event.type === 'log') {

@@ -107,4 +107,34 @@ describe('watchJob', () => {
       expect(text).toBe('Job j1 finished (exit 0).');
     },
   );
+
+  it(
+    'REGRESSION (Codex review): an event arriving while the final notification is still in flight ' +
+    'must not schedule a dangling notification that fires after the tool call already resolved',
+    async () => {
+      const collector = new Collector(testSocketPath());
+      let releaseNotification: (() => void) | null = null;
+      const sendNotification = jest.fn(() => new Promise<void>((resolve) => {
+        releaseNotification = resolve;
+      }));
+
+      // No jobId filter — every event passes the filter, matching the
+      // "watch the next job to start" mode where this is reachable.
+      const promise = watchJob({ collector, deadlineMs: 3000, progressToken: 'tok', sendNotification });
+
+      const handlers = (collector as unknown as { handlers: Array<(e: MonitorEvent) => void> }).handlers;
+      handlers.forEach((h) => h({ type: 'job_done', jobId: 'j1', exitCode: 0, timestamp: ts }));
+
+      await new Promise((r) => setTimeout(r, 50)); // let the async chain reach sendNotification
+      handlers.forEach((h) => h({ type: 'log', jobId: 'other-job', line: 'late log', timestamp: ts }));
+
+      releaseNotification!();
+      await promise;
+
+      expect(sendNotification).toHaveBeenCalledTimes(1);
+      await new Promise((r) => setTimeout(r, 1700)); // past LOG_THROTTLE_MS, catches a dangling timer
+      expect(sendNotification).toHaveBeenCalledTimes(1);
+    },
+    10000,
+  );
 });
