@@ -15,6 +15,14 @@ import { fileURLToPath } from 'url';
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const packagesDir = path.join(rootDir, 'packages');
 
+// shell: true — execFileSync('npm', ...) fails with ENOENT on Windows
+// without it, since npm is a .cmd/.ps1 shim there, not a directly
+// executable binary. This script runs both in CI (Linux) and via `npm run
+// release` locally (which may be Windows), so it needs to work on both.
+function npm(args, opts = {}) {
+  return execFileSync('npm', args, { shell: true, ...opts });
+}
+
 for (const dir of readdirSync(packagesDir, { withFileTypes: true })) {
   if (!dir.isDirectory()) continue;
   const pkgDir = path.join(packagesDir, dir.name);
@@ -23,10 +31,19 @@ for (const dir of readdirSync(packagesDir, { withFileTypes: true })) {
 
   let alreadyPublished = false;
   try {
-    execFileSync('npm', ['view', spec, 'version'], { stdio: 'pipe' });
+    npm(['view', spec, 'version'], { stdio: 'pipe' });
     alreadyPublished = true;
-  } catch {
-    // npm view exits non-zero (E404) when the version isn't published yet — expected, not an error.
+  } catch (err) {
+    // npm view exits non-zero with E404 when the version genuinely isn't
+    // published yet — that's the expected, "go ahead and publish" case.
+    // Any OTHER failure (network blip, auth, registry outage) must not be
+    // silently treated the same way: doing so would attempt to publish a
+    // version that likely already exists, fail there instead, and — since
+    // that failure is intentionally NOT caught (see below) — abort the
+    // whole script before later, genuinely-changed packages are attempted,
+    // recreating the exact bug this script exists to fix.
+    const output = `${err.stdout ?? ''}${err.stderr ?? ''}`;
+    if (!output.includes('E404')) throw err;
   }
 
   if (alreadyPublished) {
@@ -37,5 +54,5 @@ for (const dir of readdirSync(packagesDir, { withFileTypes: true })) {
   console.log(`Publishing ${spec}`);
   const args = ['publish'];
   if (process.env.NPM_PUBLISH_PROVENANCE === 'true') args.push('--provenance');
-  execFileSync('npm', args, { cwd: pkgDir, stdio: 'inherit' });
+  npm(args, { cwd: pkgDir, stdio: 'inherit' });
 }
