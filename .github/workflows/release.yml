@@ -1,9 +1,11 @@
 name: Release
 
-# Publishes both packages to npm when a `v*` tag is pushed (e.g. `v0.1.0`).
-# Requires an NPM_TOKEN repo secret (an npm token with publish rights to
-# mcp-telemetry-sdk and mcp-telemetry-server) — this workflow does nothing
-# until that secret is configured.
+# Publishes whichever packages actually changed version when a `v*` tag is
+# pushed (e.g. `v0.1.0`) — see scripts/publish-changed.mjs; a tag can bump
+# just one package (e.g. a server-only patch) without failing on the other,
+# already-published one. Requires an NPM_TOKEN repo secret (an npm token
+# with publish rights to mcp-telemetry-sdk and mcp-telemetry-server) — this
+# workflow does nothing until that secret is configured.
 
 on:
   push:
@@ -30,6 +32,8 @@ jobs:
 
       - run: npm test
 
-      - run: npm publish --workspaces --provenance
+      - name: Publish changed packages only
+        run: node scripts/publish-changed.mjs
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_PUBLISH_PROVENANCE: 'true'
