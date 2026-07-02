@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] — 2026-07-02
+
+Server-only patch (`mcp-telemetry-server` only — `mcp-telemetry-sdk` unchanged since 0.1.1).
+
+### Fixed
+- `mcp-telemetry-server`: `telemetry_subscribe`'s handler awaited the final `job_done` notification send *before* calling `finish()`, while the deadline timer stayed armed the whole time. A slow notification send could let the timer fire first, silently dropping the later successful `finish()` behind its own `settled` guard — reporting a job that actually completed in time as timed out. `finish()` is now the single place that atomically claims "done" (synchronously, before any `await`) and only then sends the final notification. Found via automated PR review, reproduced with a controllable-timing test before fixing.
+- `mcp-telemetry-server`: an event arriving while that final notification send was still in flight (e.g. another job's log line, reachable when subscribing with no `jobId` filter) was still queued and could schedule a notification that fired after the tool call had already resolved. `handler` now bails immediately once `finish()` has claimed the exchange. Also found via automated PR review, also covered by a permanent regression test.
+
 ## [0.1.1] — 2026-07-02
 
 ### Fixed
@@ -21,5 +29,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `mcp-telemetry-server`: `telemetry_jobs` and `telemetry_job_status` tools for point-in-time queries.
 - Full Jest test suite: unit tests for both packages plus an end-to-end suite that spawns the real compiled server binary and drives it over stdio.
 
+[0.1.2]: https://github.com/arnavranjan005/mcp-telemetry/releases/tag/v0.1.2
 [0.1.1]: https://github.com/arnavranjan005/mcp-telemetry/releases/tag/v0.1.1
 [0.1.0]: https://github.com/arnavranjan005/mcp-telemetry/releases/tag/v0.1.0
